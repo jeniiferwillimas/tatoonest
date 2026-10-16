@@ -5,11 +5,67 @@ services:
     environment:
       POSTGRES_DB: wizardtatoo
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: wizardtatoo-api
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "5050:5050"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=wizardtatoo;Username=postgres;Password=${DB_PASSWORD:-postgres}"
+      Jwt__Key: ${JWT_SECRET_KEY}
+      Jwt__Issuer: TattooNest
+      Jwt__Audience: TattooNestApp
+      Crypto__WalletAddress: ${CRYPTO_WALLET_ADDRESS}
+      NowPayments__ApiKey: ${NOWPAYMENTS_API_KEY}
+      NowPayments__IpnSecret: ${NOWPAYMENTS_IPN_SECRET}
+      NowPayments__BaseUrl: https://api.nowpayments.io/v1
+      NowPayments__PriceCurrency: usd
+      CardRamp__AlchemyPayMerchantWallet: ${CRYPTO_WALLET_ADDRESS}
+      Mail__Host: ${MAIL_HOST:-smtp.resend.com}
+      Mail__Port: "587"
+      Mail__Username: ${MAIL_USERNAME:-resend}
+      Mail__Password: ${MAIL_PASSWORD}
+      Mail__FromAddress: ${MAIL_FROM_ADDRESS:-onboarding@resend.dev}
+      Mail__FromName: TattooNest
+      Mail__NotifyEmail: ${MAIL_NOTIFY_EMAIL}
+      FrontendUrl: ${FRONTEND_URL:-http://localhost:3000}
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:5050/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5050}
+    container_name: wizardtatoo-web
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5050}
 
 volumes:
   pgdata:
