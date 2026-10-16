@@ -74,7 +74,7 @@ export default function Footer() {
             <p className="mb-4 text-xs font-semibold uppercase tracking-wider text-[#e8453c]">{t("nav.forArtists")}</p>
             <ul className="flex flex-col gap-2.5">
               {FOR_ARTISTS.map((item) => (
-                <li key={item.href}>
+                <li key={item.label}>
                   <Link href={item.href} className="text-sm transition-colors hover:text-[var(--accent)]">{item.label}</Link>
                 </li>
               ))}
