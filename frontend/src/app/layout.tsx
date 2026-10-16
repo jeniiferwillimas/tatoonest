@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import ReduxProvider from "@/store/Provider";
+import { LanguageProvider } from "@/i18n/context";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -14,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Wizard Tattoo",
+  title: "TattooNest",
   description: "Find your perfect tattoo artist. Browse thousands of artists in your city. Compare styles, prices, and reviews.",
 };
 
@@ -26,7 +27,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <ReduxProvider>{children}</ReduxProvider>
+        <LanguageProvider>
+          <ReduxProvider>{children}</ReduxProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

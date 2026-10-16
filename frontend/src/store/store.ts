@@ -5,6 +5,11 @@ import landingReducer from "./slices/landingSlice";
 import styleReducer from "./slices/styleSlice";
 import artistReducer from "./slices/artistSlice";
 import artistProfileReducer from "./slices/artistProfileSlice";
+import bookingReducer from "./slices/bookingSlice";
+import messageReducer from "./slices/messageSlice";
+import reviewReducer from "./slices/reviewSlice";
+import savedReducer from "./slices/savedSlice";
+import paymentReducer from "./slices/paymentSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +19,11 @@ export const store = configureStore({
     styles: styleReducer,
     artists: artistReducer,
     artistProfile: artistProfileReducer,
+    bookings: bookingReducer,
+    messages: messageReducer,
+    reviews: reviewReducer,
+    saved: savedReducer,
+    payments: paymentReducer,
   },
 });
 

@@ -173,10 +173,10 @@ export default function Sidebar() {
         {!collapsed && (
           <Link href="/" className="flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--accent)] text-white font-bold text-lg">
-              TW
+              TN
             </div>
             <div>
-              <span className="text-lg font-bold">Tattoos Wizard</span>
+              <span className="text-lg font-bold">TattooNest</span>
               <span className="block text-xs capitalize" style={{ color: "#999" }}>{userRole}</span>
             </div>
           </Link>

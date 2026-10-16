@@ -4,7 +4,6 @@ export const urlHelper = {
   auth: {
     register: `${BASE_URL}/api/auth/register`,
     login: `${BASE_URL}/api/auth/login`,
-    google: `${BASE_URL}/api/auth/google`,
     forgotPassword: `${BASE_URL}/api/auth/forgot-password`,
     resetPassword: `${BASE_URL}/api/auth/reset-password`,
     logout: `${BASE_URL}/api/auth/logout`,
@@ -38,6 +37,41 @@ export const urlHelper = {
     uploadImage: `${BASE_URL}/api/artist-profile/images`,
     deleteImage: (id: number) => `${BASE_URL}/api/artist-profile/images/${id}`,
     submit: `${BASE_URL}/api/artist-profile/submit`,
+  },
+  bookings: {
+    list: `${BASE_URL}/api/bookings`,
+    artistBookings: `${BASE_URL}/api/bookings/artist`,
+    create: `${BASE_URL}/api/bookings`,
+    updateStatus: (id: number) => `${BASE_URL}/api/bookings/${id}/status`,
+  },
+  messages: {
+    conversations: `${BASE_URL}/api/messages/conversations`,
+    conversation: (id: number) => `${BASE_URL}/api/messages/conversations/${id}`,
+    send: (id: number) => `${BASE_URL}/api/messages/conversations/${id}`,
+    startConversation: `${BASE_URL}/api/messages/conversations`,
+  },
+  reviews: {
+    artistReviews: (artistId: number) => `${BASE_URL}/api/reviews/artist/${artistId}`,
+    myReviews: `${BASE_URL}/api/reviews/my`,
+    received: `${BASE_URL}/api/reviews/received`,
+    create: `${BASE_URL}/api/reviews`,
+    reply: (id: number) => `${BASE_URL}/api/reviews/${id}/reply`,
+  },
+  saved: {
+    list: `${BASE_URL}/api/saved`,
+    boards: `${BASE_URL}/api/saved/boards`,
+    save: `${BASE_URL}/api/saved`,
+    remove: (id: number) => `${BASE_URL}/api/saved/${id}`,
+  },
+  payments: {
+    walletConfig: `${BASE_URL}/api/payments/wallet-config`,
+    cryptoCheckout: `${BASE_URL}/api/payments/crypto/checkout`,
+    cardRampUrl: `${BASE_URL}/api/payments/card-ramp-url`,
+    bookingCheckout: `${BASE_URL}/api/payments/booking/checkout`,
+    bookingStatus: (id: number) => `${BASE_URL}/api/payments/booking/${id}/status`,
+    subscriptionStatus: `${BASE_URL}/api/payments/subscription/status`,
+    confirm: `${BASE_URL}/api/payments/confirm`,
+    plans: `${BASE_URL}/api/payments/plans`,
   },
 };
 

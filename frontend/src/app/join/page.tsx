@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ChevronDown,
-  Globe,
   Check,
   Star,
   Send,
@@ -13,11 +12,13 @@ import {
 } from "lucide-react";
 import { Button, Input, Text } from "@/components/ui";
 import AuthModal from "@/components/AuthModal";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useTranslation } from "@/i18n/context";
 
 const STEPS = [
-  { title: "Create your account", desc: "Email or Google, takes a minute" },
-  { title: "Start your profile", desc: "Your Instagram handle, or your name" },
-  { title: "Show it's you", desc: "Add a code to your Instagram bio" },
+  { title: "Create your account", desc: "Email and password, takes a minute" },
+  { title: "Start your profile", desc: "Your name and studio info" },
+  { title: "Verify your identity", desc: "Quick verification to confirm it's you" },
   { title: "Add your photos", desc: "0 of 6 minimum" },
   { title: "Add your details", desc: "Name, bio, location, styles" },
   { title: "Submit for review", desc: "Finish the steps above first" },
@@ -25,6 +26,7 @@ const STEPS = [
 
 export default function JoinPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [authModal, setAuthModal] = useState<"login" | "register" | null>(null);
   const [email, setEmail] = useState("");
 
@@ -33,9 +35,8 @@ export default function JoinPage() {
       {/* ─── Header ─── */}
       <header className="w-full border-b border-[var(--border)] bg-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex flex-col leading-tight">
-            <span className="text-sm font-medium tracking-widest">TATTOOS</span>
-            <span className="text-2xl font-bold tracking-tight">WIZARD</span>
+          <Link href="/" className="text-2xl font-bold tracking-tight">
+            TattooNest
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
@@ -57,8 +58,8 @@ export default function JoinPage() {
               </button>
               <div className="pointer-events-none absolute left-0 top-full pt-2 opacity-0 transition-all group-hover:pointer-events-auto group-hover:opacity-100">
                 <div className="min-w-[180px] rounded-lg border border-[var(--border)] bg-white py-2 shadow-lg">
-                  <Link href="#" className="block px-4 py-2.5 text-sm hover:bg-gray-50 hover:text-[var(--accent)]">AI Tattoo Generator</Link>
-                  <Link href="#" className="block px-4 py-2.5 text-sm hover:bg-gray-50 hover:text-[var(--accent)]">Custom Design</Link>
+                  <Link href="/artists" className="block px-4 py-2.5 text-sm hover:bg-gray-50 hover:text-[var(--accent)]">AI Tattoo Generator</Link>
+                  <Link href="/artists" className="block px-4 py-2.5 text-sm hover:bg-gray-50 hover:text-[var(--accent)]">Custom Design</Link>
                 </div>
               </div>
             </div>
@@ -68,25 +69,25 @@ export default function JoinPage() {
               </button>
               <div className="pointer-events-none absolute left-0 top-full pt-2 opacity-0 transition-all group-hover:pointer-events-auto group-hover:opacity-100">
                 <div className="min-w-[180px] rounded-lg border border-[var(--border)] bg-white py-2 shadow-lg">
-                  <Link href="#" className="block px-4 py-2.5 text-sm hover:bg-gray-50 hover:text-[var(--accent)]">Free Artist Profile</Link>
-                  <Link href="#" className="block px-4 py-2.5 text-sm hover:bg-gray-50 hover:text-[var(--accent)]">Artist Resources</Link>
+                  <Link href="/join" className="block px-4 py-2.5 text-sm hover:bg-gray-50 hover:text-[var(--accent)]">Free Artist Profile</Link>
+                  <Link href="/join" className="block px-4 py-2.5 text-sm hover:bg-gray-50 hover:text-[var(--accent)]">Artist Resources</Link>
                 </div>
               </div>
             </div>
-            <Link href="#" className="text-sm font-medium transition-colors hover:text-[var(--accent)]">Blog</Link>
+            <Link href="/artists" className="text-sm font-medium transition-colors hover:text-[var(--accent)]">Blog</Link>
           </nav>
 
           <div className="flex items-center gap-4">
-            <button className="hidden items-center gap-1.5 text-sm md:flex">
-              <Globe size={18} /> EN
-            </button>
+            <div className="hidden md:block">
+              <LanguageSwitcher />
+            </div>
             <Link href="/join">
               <Button variant="accent-outline" size="sm" className="rounded-full">
-                Join as Artist
+                {t("nav.joinAsArtist")}
               </Button>
             </Link>
             <button onClick={() => setAuthModal("login")} className="text-sm font-medium text-[var(--accent)] transition-colors hover:text-[var(--accent-hover)]">
-              Sign In
+              {t("nav.signIn")}
             </button>
           </div>
         </div>
@@ -100,45 +101,45 @@ export default function JoinPage() {
             <div className="flex items-center gap-3">
               <div className="h-0.5 w-8 bg-[var(--accent)]" />
               <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: "var(--accent)" }}>
-                For Tattoo Artists
+                {t("join.badge")}
               </span>
             </div>
 
             <h1 className="text-4xl font-bold leading-tight tracking-tight sm:text-5xl">
-              Get listed on{" "}
+              {t("join.title1")}
               <span className="italic text-[var(--accent)]" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Tattoos Wizard
+                {t("join.title2")}
               </span>
             </h1>
 
             <p className="max-w-lg text-base leading-relaxed" style={{ color: "#555" }}>
-              A free profile where people looking for their next tattoo can find you. Set it up in a few minutes. Our team checks every profile before it goes live.
+              {t("join.desc")}
             </p>
 
             <ul className="flex flex-col gap-3 mt-2">
               <li className="flex items-center gap-3 text-sm">
                 <Check size={18} className="text-[var(--accent)] shrink-0" />
-                Free, no subscription
+                {t("join.free")}
               </li>
               <li className="flex items-center gap-3 text-sm">
                 <Check size={18} className="text-[var(--accent)] shrink-0" />
-                Start from your Instagram, or without it
+                {t("join.upload")}
               </li>
               <li className="flex items-center gap-3 text-sm">
                 <Check size={18} className="text-[var(--accent)] shrink-0" />
-                Reviewed by a real person
+                {t("join.reviewed")}
               </li>
             </ul>
 
             <div className="flex flex-wrap items-center gap-4 mt-4">
               <Button size="lg" onClick={() => setAuthModal("register")}>
-                Create a free account
+                {t("join.createAccount")}
               </Button>
               <button
                 onClick={() => setAuthModal("login")}
                 className="rounded-lg border border-[var(--border)] px-6 py-3 text-sm font-medium transition-colors hover:border-gray-400"
               >
-                I already have an account
+                {t("join.haveAccount")}
               </button>
             </div>
 
@@ -204,11 +205,11 @@ export default function JoinPage() {
       <footer className="border-t border-[var(--border)] bg-[var(--section-bg)]">
         <div className="mx-auto max-w-7xl px-6 py-12">
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-            <p className="text-sm" style={{ color: "#666" }}>&copy; 2026 Tattoos Wizard. All rights reserved.</p>
+            <p className="text-sm" style={{ color: "#666" }}>&copy; 2026 TattooNest. All rights reserved.</p>
             <div className="flex gap-4 text-sm" style={{ color: "#666" }}>
-              <a className="transition-colors hover:text-[var(--accent)]">Terms of Service</a>
+              <a href="/terms" className="transition-colors hover:text-[var(--accent)]">Terms of Service</a>
               <span>&middot;</span>
-              <a className="transition-colors hover:text-[var(--accent)]">Privacy Policy</a>
+              <a href="/privacy" className="transition-colors hover:text-[var(--accent)]">Privacy Policy</a>
             </div>
           </div>
         </div>

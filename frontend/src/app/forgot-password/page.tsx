@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Footer from "@/components/layouts/Footer";
 import { ArrowLeft, Mail } from "lucide-react";
 import { Button, Input } from "@/components/ui";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -110,6 +111,7 @@ export default function ForgotPasswordPage() {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -3,12 +3,12 @@
 import { Suspense, useEffect, useState, useCallback } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import Footer from "@/components/layouts/Footer";
 import {
   ArrowLeft,
   Heart,
   Share2,
   MapPin,
-  ExternalLink,
   ChevronDown,
   ChevronUp,
   ChevronLeft,
@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui";
+import BookingModal from "@/components/BookingModal";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchArtistBySlug } from "@/store/slices/artistSlice";
 
@@ -39,6 +40,7 @@ function ArtistDetailPage() {
   const [saved, setSaved] = useState(false);
   const [showFullBio, setShowFullBio] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   useEffect(() => {
     if (slug) dispatch(fetchArtistBySlug(slug));
@@ -268,11 +270,17 @@ function ArtistDetailPage() {
                       className="w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       style={{ aspectRatio: i % 3 === 0 ? "3/4" : i % 3 === 1 ? "1/1" : "4/5" }}
                     />
-                    {img.price && (
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-3 py-2">
+                    <div className="absolute inset-0 flex flex-col items-center justify-end bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 px-3 pb-3">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); setBookingOpen(true); }}
+                        className="mb-1 w-full rounded-full bg-[var(--accent)] px-4 py-2 text-xs font-bold uppercase tracking-wide text-white transition-transform hover:scale-105"
+                      >
+                        Book a Tattoo
+                      </button>
+                      {img.price && (
                         <span className="text-sm font-bold text-white">{formatPrice(img.price)}</span>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -321,18 +329,13 @@ function ArtistDetailPage() {
               </div>
 
               {/* Action Buttons */}
-              {artist.instagramHandle && (
-                <a
-                  href={`https://instagram.com/${artist.instagramHandle}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button fullWidth className="rounded-full">
-                    Message on Instagram
-                    <ExternalLink size={14} />
-                  </Button>
-                </a>
-              )}
+              <Button
+                fullWidth
+                className="rounded-full"
+                onClick={() => setBookingOpen(true)}
+              >
+                Book &amp; Pay
+              </Button>
 
               <Button
                 variant={saved ? "primary" : "outline"}
@@ -383,22 +386,21 @@ function ArtistDetailPage() {
                 {artist.priceMin ? formatPrice(artist.priceMin) : "Contact"}
               </p>
             </div>
-            {artist.instagramHandle ? (
-              <a
-                href={`https://instagram.com/${artist.instagramHandle}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button className="rounded-full">Message</Button>
-              </a>
-            ) : (
-              <Button className="rounded-full" onClick={() => setSaved(!saved)}>
-                {saved ? "Saved" : "Save"}
-              </Button>
-            )}
+            <Button className="rounded-full" onClick={() => setBookingOpen(true)}>
+              Book &amp; Pay
+            </Button>
           </div>
         </div>
       </div>
+
+      <BookingModal
+        isOpen={bookingOpen}
+        onClose={() => setBookingOpen(false)}
+        artistName={artist.name}
+        amount={artist.priceMin || 150}
+      />
+
+      <Footer />
     </div>
   );
 }

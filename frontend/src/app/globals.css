@@ -44,6 +44,10 @@
   --section-bg: #111111;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: #000000 !important;

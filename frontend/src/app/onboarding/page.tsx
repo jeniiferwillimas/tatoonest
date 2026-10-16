@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Footer from "@/components/layouts/Footer";
 import {
   Check,
   Upload,
@@ -29,8 +30,8 @@ import {
 import { fetchLandingData } from "@/store/slices/landingSlice";
 
 const STEPS = [
-  { icon: User, title: "Start your profile", desc: "Your Instagram handle, or your name" },
-  { icon: AtSign, title: "Show it's you", desc: "Add a code to your Instagram bio" },
+  { icon: User, title: "Start your profile", desc: "Your name and studio info" },
+  { icon: AtSign, title: "Verify your identity", desc: "Quick verification to confirm it's you" },
   { icon: Camera, title: "Add your photos", desc: "6 photos minimum" },
   { icon: FileText, title: "Add your details", desc: "Name, bio, location, styles" },
   { icon: Send, title: "Submit for review", desc: "Finish the steps above first" },
@@ -46,7 +47,6 @@ export default function OnboardingPage() {
   const { styles: allStyles } = useAppSelector((s) => s.landing);
 
   const [activeStep, setActiveStep] = useState(0);
-  const [instagram, setInstagram] = useState("");
   const [isStudio, setIsStudio] = useState(false);
   const [bio, setBio] = useState("");
   const [city, setCity] = useState("");
@@ -74,7 +74,6 @@ export default function OnboardingPage() {
   useEffect(() => {
     if (profile) {
       setActiveStep(profile.currentStep);
-      setInstagram(profile.instagramHandle || "");
       setIsStudio(profile.isStudio);
       setBio(profile.bio || "");
       setCity(profile.city || "");
@@ -84,7 +83,7 @@ export default function OnboardingPage() {
   }, [profile]);
 
   const handleCreateProfile = async () => {
-    await dispatch(createArtistProfile({ instagramHandle: instagram || undefined, isStudio }));
+    await dispatch(createArtistProfile({ isStudio }));
     setActiveStep(1);
   };
 
@@ -131,9 +130,8 @@ export default function OnboardingPage() {
       {/* Header */}
       <header className="w-full border-b border-[var(--border)] bg-white">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex flex-col leading-tight">
-            <span className="text-sm font-medium tracking-widest">TATTOOS</span>
-            <span className="text-2xl font-bold tracking-tight">WIZARD</span>
+          <Link href="/" className="text-2xl font-bold tracking-tight">
+            TattooNest
           </Link>
           <p className="text-sm" style={{ color: "#999" }}>Artist Onboarding</p>
         </div>
@@ -187,17 +185,8 @@ export default function OnboardingPage() {
                 <div>
                   <h2 className="text-2xl font-bold">Start your profile</h2>
                   <p className="mt-2 text-sm" style={{ color: "#666" }}>
-                    Set up your artist profile. You can start from your Instagram or enter your details manually.
+                    Set up your artist profile. Enter your details to get started.
                   </p>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-2">Instagram handle (optional)</label>
-                  <Input
-                    placeholder="@yourhandle"
-                    value={instagram}
-                    onChange={(e) => setInstagram(e.target.value)}
-                  />
                 </div>
 
                 <div className="flex items-center gap-3">
@@ -226,7 +215,6 @@ export default function OnboardingPage() {
                     Your profile has been created. Continue with the next steps.
                   </p>
                 </div>
-                {instagram && <p className="text-sm">Instagram: <strong>@{instagram}</strong></p>}
                 <Button size="lg" onClick={() => setActiveStep(1)}>Continue</Button>
               </div>
             )}
@@ -235,21 +223,21 @@ export default function OnboardingPage() {
             {activeStep === 1 && (
               <div className="flex flex-col gap-6">
                 <div>
-                  <h2 className="text-2xl font-bold">Show it&apos;s you</h2>
+                  <h2 className="text-2xl font-bold">Verify your identity</h2>
                   <p className="mt-2 text-sm" style={{ color: "#666" }}>
-                    Add this code to your Instagram bio so we can verify your identity. You can remove it after verification.
+                    Use this verification code to confirm your identity. You can share it with our team when prompted.
                   </p>
                 </div>
 
                 <div className="rounded-lg border border-[var(--border)] bg-gray-50 p-6 text-center">
                   <p className="text-xs uppercase tracking-wider mb-2" style={{ color: "#999" }}>Your verification code</p>
                   <p className="text-2xl font-mono font-bold tracking-widest text-[var(--accent)]">
-                    TW-{user?.userId?.slice(0, 8).toUpperCase() || "XXXXXXXX"}
+                    TF-{user?.userId?.slice(0, 8).toUpperCase() || "XXXXXXXX"}
                   </p>
                 </div>
 
                 <p className="text-sm" style={{ color: "#666" }}>
-                  Paste this code anywhere in your Instagram bio, then click continue.
+                  Save this code — you may need it during the review process.
                 </p>
 
                 <Button size="lg" onClick={() => setActiveStep(2)}>Continue</Button>
@@ -393,10 +381,6 @@ export default function OnboardingPage() {
                   <h3 className="text-sm font-semibold mb-4">Profile Summary</h3>
                   <div className="flex flex-col gap-3 text-sm">
                     <div className="flex justify-between">
-                      <span style={{ color: "#666" }}>Instagram</span>
-                      <span className="font-medium">{profile?.instagramHandle ? `@${profile.instagramHandle}` : "—"}</span>
-                    </div>
-                    <div className="flex justify-between">
                       <span style={{ color: "#666" }}>Location</span>
                       <span className="font-medium">{profile?.city}, {profile?.country}</span>
                     </div>
@@ -436,6 +420,7 @@ export default function OnboardingPage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

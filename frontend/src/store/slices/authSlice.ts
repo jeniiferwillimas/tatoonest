@@ -50,19 +50,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const googleLogin = createAsyncThunk(
-  "auth/googleLogin",
-  async (credential: string, { rejectWithValue }) => {
-    try {
-      const res = await api.post(urlHelper.auth.google, { credential });
-      return res.data;
-    } catch (err) {
-      const error = err as AxiosError<{ error: string }>;
-      return rejectWithValue(error.response?.data?.error || "Google login failed");
-    }
-  }
-);
-
 export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (data: { email: string }, { rejectWithValue }) => {
@@ -141,9 +128,6 @@ const authSlice = createSlice({
       .addCase(loginUser.pending, (state) => { state.loading = true; state.error = null; })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<AuthPayload>) => { setAuthState(state, action.payload); })
       .addCase(loginUser.rejected, (state, action) => { state.loading = false; state.error = action.payload as string; })
-      .addCase(googleLogin.pending, (state) => { state.loading = true; state.error = null; })
-      .addCase(googleLogin.fulfilled, (state, action: PayloadAction<AuthPayload>) => { setAuthState(state, action.payload); })
-      .addCase(googleLogin.rejected, (state, action) => { state.loading = false; state.error = action.payload as string; })
       .addCase(forgotPassword.pending, (state) => { state.loading = true; state.error = null; })
       .addCase(forgotPassword.fulfilled, (state) => { state.loading = false; })
       .addCase(forgotPassword.rejected, (state, action) => { state.loading = false; state.error = action.payload as string; })

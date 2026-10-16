@@ -3,6 +3,11 @@ import { AxiosError } from "axios";
 import api from "@/utils/axiosInstance";
 import urlHelper from "@/utils/urlHelper";
 
+interface ArtistListImage {
+  imageUrl: string;
+  price: number | null;
+}
+
 interface ArtistItem {
   name: string;
   slug: string;
@@ -12,7 +17,9 @@ interface ArtistItem {
   followers: string | null;
   priceMin: number | null;
   priceMax: number | null;
+  profileImageUrl: string | null;
   styles: string[];
+  images: ArtistListImage[];
 }
 
 interface PortfolioImage {

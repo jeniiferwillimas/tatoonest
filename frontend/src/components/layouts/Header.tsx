@@ -121,7 +121,7 @@ export default function Header({ onMobileMenuToggle }: HeaderProps) {
                     Profile
                   </Link>
                   <Link
-                    href="/dashboard/settings"
+                    href="/dashboard/admin/settings"
                     onClick={() => setProfileOpen(false)}
                     className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-gray-100"
                   >

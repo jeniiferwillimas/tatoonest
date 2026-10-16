@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Footer from "@/components/layouts/Footer";
 import { ArrowLeft, Check, Eye, EyeOff } from "lucide-react";
 import { Button, Input } from "@/components/ui";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -83,7 +84,8 @@ function ResetPasswordForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[var(--section-bg)] px-4">
+    <div className="flex min-h-screen flex-col bg-[var(--section-bg)]">
+      <div className="flex flex-1 items-center justify-center px-4">
       <div className="w-full max-w-md">
         <div className="rounded-2xl border border-[var(--border)] bg-white p-8 shadow-sm">
           {!success ? (
@@ -177,6 +179,8 @@ function ResetPasswordForm() {
           )}
         </div>
       </div>
+      </div>
+      <Footer />
     </div>
   );
 }
