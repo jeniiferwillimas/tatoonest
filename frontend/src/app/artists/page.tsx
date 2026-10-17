@@ -99,6 +99,7 @@ function ArtistsPage() {
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [authModal, setAuthModal] = useState<"login" | "register" | null>(null);
   const [selectedStyle, setSelectedStyle] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const dispatch = useAppDispatch();
   const { styles, loading: landingLoading } = useAppSelector((s) => s.landing);
@@ -203,33 +204,67 @@ function ArtistsPage() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="hidden md:block">
               <LanguageSwitcher />
             </div>
             {isLoggedIn ? (
               <Link href="/dashboard">
-                <button className="rounded-full bg-[var(--accent)] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--accent-hover)]">
+                <button className="rounded-full bg-[var(--accent)] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--accent-hover)]">
                   Dashboard
                 </button>
               </Link>
             ) : (
               <>
-                <Link href="/join">
-                  <button className="rounded-full border border-[#e8453c] px-5 py-2 text-sm font-medium text-[#e8453c] transition-colors hover:bg-[#e8453c] hover:text-white">
+                <Link href="/join" className="hidden sm:block">
+                  <button className="rounded-full border border-[#e8453c] px-4 py-2 text-sm font-medium text-[#e8453c] transition-colors hover:bg-[#e8453c] hover:text-white">
                     {t("nav.joinAsArtist")}
                   </button>
                 </Link>
                 <button
                   onClick={() => setAuthModal("login")}
-                  className="text-sm font-medium text-[#e8453c] transition-colors hover:text-[#c5372f]"
+                  className="rounded-full bg-[#e8453c] px-4 py-2 text-sm font-medium text-white sm:bg-transparent sm:text-[#e8453c] sm:hover:text-[#c5372f]"
                 >
                   {t("nav.signIn")}
                 </button>
               </>
             )}
+            <button className="ml-1 rounded-lg p-2 hover:bg-gray-100 md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+              {mobileMenuOpen ? <X size={20} /> : <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>}
+            </button>
           </div>
         </div>
+        {mobileMenuOpen && (
+          <div className="border-t border-[var(--border)] px-6 py-4 md:hidden">
+            <nav className="flex flex-col gap-3">
+              {NAV_ITEMS.map((item) =>
+                item.children ? (
+                  <div key={item.label}>
+                    <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: "#999" }}>{item.label}</span>
+                    <div className="mt-1 flex flex-col gap-1 pl-2">
+                      {item.children.map((child) => (
+                        <Link key={child.label} href={child.href} className="py-1.5 text-sm hover:text-[var(--accent)]" onClick={() => setMobileMenuOpen(false)}>
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <Link key={item.label} href={item.href || "#"} className="py-1.5 text-sm font-medium hover:text-[var(--accent)]" onClick={() => setMobileMenuOpen(false)}>
+                    {item.label}
+                  </Link>
+                )
+              )}
+              {!isLoggedIn && (
+                <Link href="/join" className="mt-2 sm:hidden">
+                  <button className="w-full rounded-full border border-[#e8453c] px-4 py-2 text-sm font-medium text-[#e8453c]">
+                    {t("nav.joinAsArtist")}
+                  </button>
+                </Link>
+              )}
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* ─── Style Pills Row ─── */}

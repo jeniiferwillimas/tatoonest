@@ -145,7 +145,7 @@ export default function AllUsersPage() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+      <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">
         {loading ? (
           <div className="flex justify-center py-12">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--accent)] border-t-transparent" />
@@ -155,9 +155,9 @@ export default function AllUsersPage() {
             <thead>
               <tr className="border-b border-gray-200 bg-gray-50">
                 <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: "#999" }}>User</th>
-                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: "#999" }}>Email</th>
+                <th className="hidden px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider sm:table-cell" style={{ color: "#999" }}>Email</th>
                 <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: "#999" }}>Role</th>
-                <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider" style={{ color: "#999" }}>Joined</th>
+                <th className="hidden px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider md:table-cell" style={{ color: "#999" }}>Joined</th>
                 <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider" style={{ color: "#999" }}>Actions</th>
               </tr>
             </thead>
@@ -172,7 +172,7 @@ export default function AllUsersPage() {
                       <span className="text-sm font-medium">{user.fullName}</span>
                     </div>
                   </td>
-                  <td className="px-5 py-4 text-sm" style={{ color: "#666" }}>{user.email}</td>
+                  <td className="hidden px-5 py-4 text-sm sm:table-cell" style={{ color: "#666" }}>{user.email}</td>
                   <td className="px-5 py-4">
                     {editingRole?.id === user.id ? (
                       <div className="flex items-center gap-2">
@@ -201,7 +201,7 @@ export default function AllUsersPage() {
                       </span>
                     )}
                   </td>
-                  <td className="px-5 py-4 text-sm" style={{ color: "#999" }}>
+                  <td className="hidden px-5 py-4 text-sm md:table-cell" style={{ color: "#999" }}>
                     {new Date(user.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-5 py-4 text-right">
