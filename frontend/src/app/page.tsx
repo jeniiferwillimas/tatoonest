@@ -120,16 +120,16 @@ const DEFAULT_HERO = { main: "/images/styles/realism.jpg", topRight: "/images/st
 
 /* ─── City data (country + count) ─── */
 const CITY_DATA: Record<string, { country: string; count: number }> = {
-  Toronto: { country: "Canada", count: 9 },
-  Prague: { country: "Czech Republic", count: 8 },
-  "New York": { country: "United States", count: 7 },
-  Tokyo: { country: "Japan", count: 7 },
-  Copenhagen: { country: "Denmark", count: 7 },
-  Boston: { country: "United States", count: 7 },
-  Dubai: { country: "UAE", count: 7 },
-  "Sao Paulo": { country: "Brazil", count: 6 },
-  Amsterdam: { country: "Netherlands", count: 6 },
-  Honolulu: { country: "United States", count: 6 },
+  "New York": { country: "United States", count: 20 },
+  "Los Angeles": { country: "United States", count: 20 },
+  London: { country: "United Kingdom", count: 20 },
+  Tokyo: { country: "Japan", count: 20 },
+  Toronto: { country: "Canada", count: 20 },
+  Paris: { country: "France", count: 20 },
+  Berlin: { country: "Germany", count: 20 },
+  Seoul: { country: "South Korea", count: 20 },
+  Barcelona: { country: "Spain", count: 20 },
+  Miami: { country: "United States", count: 20 },
 };
 
 /* ─── Page ─── */
