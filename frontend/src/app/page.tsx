@@ -11,6 +11,8 @@ import {
   Send,
   Lightbulb,
   Coins,
+  Menu,
+  X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Button, Input } from "@/components/ui";
@@ -142,6 +144,8 @@ export default function Home() {
   const [selectedDetail, setSelectedDetail] = useState("Detailed");
   const [selectedArtist, setSelectedArtist] = useState("Established");
   const [weekLabel, setWeekLabel] = useState("This Week");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -169,7 +173,7 @@ export default function Home() {
 
       {/* ─── Header ─── */}
       <header className="w-full border-b border-[var(--border)] bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
           <div className="text-xl font-bold tracking-tight">TattooNest</div>
 
           <nav className="hidden items-center gap-8 md:flex">
@@ -207,36 +211,101 @@ export default function Home() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="hidden md:block">
               <LanguageSwitcher />
             </div>
             {hydrated && user ? (
               <Link href="/dashboard">
-                <button className="rounded-full bg-[#e8453c] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#c5372f]">
+                <button className="rounded-full bg-[#e8453c] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#c5372f] sm:px-5">
                   {t("nav.dashboard") || "Dashboard"}
                 </button>
               </Link>
             ) : (
               <>
-                <Link href="/join">
+                <Link href="/join" className="hidden sm:block">
                   <button className="rounded-full border border-[#e8453c] px-5 py-2 text-sm font-medium text-[#e8453c] transition-colors hover:bg-[#e8453c] hover:text-white">
                     {t("nav.joinAsArtist")}
                   </button>
                 </Link>
-                <button onClick={() => setAuthModal("login")} className="text-sm font-medium text-[#e8453c] transition-colors hover:text-[#c5372f]">
+                <button onClick={() => setAuthModal("login")} className="rounded-full bg-[#e8453c] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#c5372f] sm:bg-transparent sm:px-0 sm:py-0 sm:text-[#e8453c] sm:hover:bg-transparent sm:hover:text-[#c5372f]">
                   {t("nav.signIn")}
                 </button>
               </>
             )}
+            <button onClick={() => setMobileMenuOpen(true)} className="ml-1 md:hidden" aria-label="Open menu">
+              <Menu size={24} />
+            </button>
           </div>
         </div>
       </header>
 
+      {/* ─── Mobile Menu Overlay ─── */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 md:hidden">
+          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileMenuOpen(false)} />
+          <div className="absolute right-0 top-0 h-full w-72 bg-white shadow-xl">
+            <div className="flex items-center justify-between border-b border-[var(--border)] px-4 py-4">
+              <span className="text-lg font-bold">TattooNest</span>
+              <button onClick={() => setMobileMenuOpen(false)} aria-label="Close menu"><X size={22} /></button>
+            </div>
+            <nav className="flex flex-col gap-1 p-4">
+              {NAV_ITEMS.map((item) => (
+                <div key={item.label}>
+                  {item.children ? (
+                    <>
+                      <button
+                        onClick={() => setMobileExpanded(mobileExpanded === item.label ? null : item.label)}
+                        className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-gray-50"
+                      >
+                        {item.label}
+                        <ChevronDown size={14} className={`transition-transform ${mobileExpanded === item.label ? "rotate-180" : ""}`} />
+                      </button>
+                      {mobileExpanded === item.label && (
+                        <div className="ml-3 flex flex-col gap-1 border-l-2 border-[var(--border)] pl-3">
+                          {item.children.map((child) => (
+                            <Link key={child.label} href={child.href} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2 text-sm hover:bg-gray-50 hover:text-[var(--accent)]">
+                              {child.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Link href={item.href || "#"} onClick={() => setMobileMenuOpen(false)} className="block rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-gray-50 hover:text-[var(--accent)]">
+                      {item.label}
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </nav>
+            <div className="border-t border-[var(--border)] p-4">
+              <LanguageSwitcher />
+              <div className="mt-4 flex flex-col gap-2">
+                {hydrated && user ? (
+                  <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)} className="block rounded-full bg-[#e8453c] px-5 py-2.5 text-center text-sm font-medium text-white">
+                    Dashboard
+                  </Link>
+                ) : (
+                  <>
+                    <Link href="/join" onClick={() => setMobileMenuOpen(false)} className="block rounded-full border border-[#e8453c] px-5 py-2.5 text-center text-sm font-medium text-[#e8453c]">
+                      {t("nav.joinAsArtist")}
+                    </Link>
+                    <button onClick={() => { setAuthModal("login"); setMobileMenuOpen(false); }} className="rounded-full bg-[#e8453c] px-5 py-2.5 text-sm font-medium text-white">
+                      {t("nav.signIn")}
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ═══════════════════════════════════════════════════
           HERO SECTION
       ═══════════════════════════════════════════════════ */}
-      <section className="mx-auto max-w-7xl px-6 py-16 lg:py-20">
+      <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16 lg:py-20">
         <div className="grid items-start gap-12 lg:grid-cols-[1fr_1.1fr]">
           {/* Left: Copy + Search */}
           <div className="flex flex-col gap-6">
@@ -260,8 +329,8 @@ export default function Home() {
             </p>
 
             {/* Search Bar */}
-            <div className="flex max-w-xl overflow-hidden rounded-lg border border-[var(--border)]">
-              <div className="flex flex-1 flex-col justify-center border-r border-[var(--border)] px-4 py-3">
+            <div className="flex max-w-xl flex-col overflow-hidden rounded-lg border border-[var(--border)] sm:flex-row">
+              <div className="flex flex-1 flex-col justify-center border-b border-[var(--border)] px-4 py-3 sm:border-b-0 sm:border-r">
                 <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#999" }}>{t("hero.where")}</span>
                 <input
                   type="text"
@@ -271,12 +340,12 @@ export default function Home() {
                   className="mt-0.5 bg-transparent text-sm outline-none"
                 />
               </div>
-              <div className="flex flex-1 flex-col justify-center px-4 py-3">
+              <div className="flex flex-1 flex-col justify-center border-b border-[var(--border)] px-4 py-3 sm:border-b-0">
                 <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#999" }}>{t("hero.style")}</span>
                 <p className="mt-0.5 text-sm">{selectedStyle}</p>
               </div>
               <Link href={`/artists?search=${encodeURIComponent(citySearch)}&style=${encodeURIComponent(selectedStyle)}`}>
-                <button className="flex h-full items-center gap-2 bg-[var(--accent)] px-6 text-sm font-medium text-white transition-colors hover:bg-[var(--accent-hover)]">
+                <button className="flex w-full items-center justify-center gap-2 bg-[var(--accent)] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[var(--accent-hover)] sm:h-full sm:w-auto sm:py-0">
                   <Search size={16} />
                   {t("hero.findArtists")}
                 </button>
@@ -304,16 +373,16 @@ export default function Home() {
             </div>
 
             {/* Stats Row */}
-            <div className="flex items-center gap-8 border-t border-[var(--border)] pt-6">
+            <div className="grid grid-cols-2 gap-4 border-t border-[var(--border)] pt-6 sm:flex sm:items-center sm:gap-8">
               {stats.map((stat) => (
                 <div key={stat.label}>
-                  <p className="text-2xl font-bold">{stat.value}</p>
-                  <p className="text-xs" style={{ color: "#999" }}>{stat.label.toLowerCase()} worldwide</p>
+                  <p className="text-xl font-bold sm:text-2xl">{stat.value}</p>
+                  <p className="text-[10px] sm:text-xs" style={{ color: "#999" }}>{stat.label.toLowerCase()} worldwide</p>
                 </div>
               ))}
               <div>
-                <p className="text-2xl font-bold">{popularCities.length || 77}</p>
-                <p className="text-xs" style={{ color: "#999" }}>{t("hero.citiesWorldwide")}</p>
+                <p className="text-xl font-bold sm:text-2xl">{popularCities.length || 77}</p>
+                <p className="text-[10px] sm:text-xs" style={{ color: "#999" }}>{t("hero.citiesWorldwide")}</p>
               </div>
             </div>
           </div>
@@ -398,7 +467,7 @@ export default function Home() {
           THIS WEEK SECTION
       ═══════════════════════════════════════════════════ */}
       <section className="border-t border-[var(--border)]">
-        <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
           <div className="mb-8 flex items-center gap-3">
             <div className="h-[3px] w-8 rounded bg-[#e8453c]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#e8453c]">
@@ -406,7 +475,7 @@ export default function Home() {
             </span>
           </div>
 
-          <h2 className="mb-10 text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="mb-10 text-2xl font-bold tracking-tight sm:text-4xl">
             {t("week.title1")}
             <span className="italic" style={{ fontFamily: "'Playfair Display', serif" }}>
               {t("week.title2")}
@@ -533,7 +602,7 @@ export default function Home() {
           HOW IT WORKS (3 cards)
       ═══════════════════════════════════════════════════ */}
       <section className="border-t border-[var(--border)]">
-        <div className="mx-auto grid max-w-7xl gap-6 px-6 py-12 md:grid-cols-3">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 py-10 sm:px-6 sm:py-12 md:grid-cols-3">
           {([
             { Icon: MapPin, color: "#e8453c", bg: "#fef2f2", title: t("how.know"), desc: t("how.knowDesc"), link: t("how.knowLink"), href: "/artists", isHash: false },
             { Icon: Lightbulb, color: "#f59e0b", bg: "#fffbeb", title: t("how.ideas"), desc: t("how.ideasDesc"), link: t("how.ideasLink"), href: "/saved", isHash: false },
@@ -566,15 +635,15 @@ export default function Home() {
           BROWSE BY STYLE
       ═══════════════════════════════════════════════════ */}
       <section className="border-t border-[var(--border)]">
-        <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
           <div className="mb-2 flex items-center gap-3">
             <div className="h-[3px] w-8 rounded bg-[#e8453c]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#e8453c]">
               {t("styles.badge")}
             </span>
           </div>
-          <div className="mb-10 flex items-end justify-between">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          <div className="mb-8 flex flex-col gap-2 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">
               {t("styles.title1")}
               <span className="italic" style={{ fontFamily: "'Playfair Display', serif" }}>
                 {t("styles.titleItalic")}
@@ -626,15 +695,15 @@ export default function Home() {
           POPULAR CITIES
       ═══════════════════════════════════════════════════ */}
       <section className="border-t border-[var(--border)]">
-        <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
           <div className="mb-2 flex items-center gap-3">
             <div className="h-[3px] w-8 rounded bg-[#e8453c]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#e8453c]">
               {t("cities.badge")}
             </span>
           </div>
-          <div className="mb-10 flex items-end justify-between">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          <div className="mb-8 flex flex-col gap-2 sm:mb-10 sm:flex-row sm:items-end sm:justify-between">
+            <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">
               {t("cities.title1")}
               <span className="italic" style={{ fontFamily: "'Playfair Display', serif" }}>
                 {t("cities.titleItalic")}
@@ -665,7 +734,7 @@ export default function Home() {
           PRICE ESTIMATOR
       ═══════════════════════════════════════════════════ */}
       <section id="price-estimator" className="scroll-mt-8 border-t border-[var(--border)] bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
           <div className="mb-2 flex items-center gap-3">
             <div className="h-[3px] w-8 rounded bg-[#e8453c]" />
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#e8453c]">
@@ -673,7 +742,7 @@ export default function Home() {
             </span>
           </div>
 
-          <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
+          <h2 className="mb-4 text-2xl font-bold tracking-tight sm:text-4xl">
             What will{" "}
             <span className="italic" style={{ fontFamily: "'Playfair Display', serif" }}>
               your
@@ -703,7 +772,7 @@ export default function Home() {
               {/* Size */}
               <div>
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#999" }}>Size</p>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                   {SIZE_OPTIONS.map((size) => (
                     <button
                       key={size.label}
@@ -748,7 +817,7 @@ export default function Home() {
               {/* Detail */}
               <div>
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#999" }}>Detail</p>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {["Simple", "Detailed", "Very detailed"].map((detail) => (
                     <button
                       key={detail}
@@ -768,7 +837,7 @@ export default function Home() {
               {/* Artist */}
               <div>
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider" style={{ color: "#999" }}>Artist</p>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {["Rising", "Established", "In demand"].map((artist) => (
                     <button
                       key={artist}
@@ -815,7 +884,7 @@ export default function Home() {
           FOR ARTISTS SECTION
       ═══════════════════════════════════════════════════ */}
       <section className="border-t border-[var(--border)] bg-[var(--section-bg)]">
-        <div className="mx-auto max-w-7xl px-6 py-20">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-20">
           <div className="grid gap-12 lg:grid-cols-2">
             {/* Left */}
             <div>
@@ -825,7 +894,7 @@ export default function Home() {
                   {t("artists.badge")}
                 </span>
               </div>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-4xl">
                 {t("artists.title1")}
                 <span className="italic" style={{ fontFamily: "'Playfair Display', serif" }}>
                   {t("artists.titleItalic")}
@@ -868,7 +937,7 @@ export default function Home() {
           NEWSLETTER
       ═══════════════════════════════════════════════════ */}
       <section className="border-t border-[var(--border)]">
-        <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-6 py-14 md:flex-row md:justify-between">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-4 py-10 sm:px-6 sm:py-14 md:flex-row md:justify-between">
           <div>
             <h3 className="text-xl font-bold sm:text-2xl">
               {t("newsletter.title")}
@@ -896,11 +965,11 @@ export default function Home() {
           FOOTER
       ═══════════════════════════════════════════════════ */}
       <footer className="border-t border-[var(--border)] bg-white">
-        <div className="mx-auto max-w-7xl px-6 py-16">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-16">
           {/* Main footer grid */}
-          <div className="mb-12 grid gap-10 md:grid-cols-5">
+          <div className="mb-12 grid grid-cols-2 gap-8 sm:gap-10 md:grid-cols-5">
             {/* Brand */}
-            <div>
+            <div className="col-span-2 md:col-span-1">
               <div className="mb-4 text-xl font-bold tracking-tight">TattooNest</div>
               <p className="text-sm leading-relaxed" style={{ color: "#666" }}>
                 Discover talented tattoo artists and get inspired for your next piece of body art.
