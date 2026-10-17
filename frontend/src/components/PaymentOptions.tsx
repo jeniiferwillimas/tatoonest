@@ -85,7 +85,7 @@ function providerColors(p: Provider) {
 }
 
 export default function PaymentOptions({ amount, productName, bookingId }: PaymentOptionsProps) {
-  const [activeTab, setActiveTab] = useState<Tab>("crypto");
+  const [activeTab, setActiveTab] = useState<Tab>("card");
   const [walletAddress, setWalletAddress] = useState("");
 
   const [cryptoLoading, setCryptoLoading] = useState(false);
@@ -95,6 +95,8 @@ export default function PaymentOptions({ amount, productName, bookingId }: Payme
   const [cardLoading, setCardLoading] = useState(false);
   const [cardError, setCardError] = useState("");
   const [copied, setCopied] = useState(false);
+
+  const [walletLoaded, setWalletLoaded] = useState(false);
 
   const [confirmEmail, setConfirmEmail] = useState("");
   const [confirmName, setConfirmName] = useState("");
@@ -110,7 +112,8 @@ export default function PaymentOptions({ amount, productName, bookingId }: Payme
       .then((data) => {
         if (data.success) setWalletAddress(data.data.walletAddress);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setWalletLoaded(true));
   }, []);
 
   function copyWallet() {
@@ -137,7 +140,7 @@ export default function PaymentOptions({ amount, productName, bookingId }: Payme
         setCryptoError(data.message || "Failed to create checkout. Please try Card/Wallet payment instead.");
       }
     } catch {
-      setCryptoError("Failed to connect. Please try Card/Wallet payment instead.");
+      setCryptoError("Failed to connect to payment server. Please try again or use Card/Wallet.");
     } finally {
       setCryptoLoading(false);
     }
@@ -185,24 +188,6 @@ export default function PaymentOptions({ amount, productName, bookingId }: Payme
         {/* Tab Selector */}
         <div className="mb-6 grid grid-cols-2 gap-3">
           <button
-            onClick={() => setActiveTab("crypto")}
-            className={`relative overflow-hidden rounded-xl border p-4 text-left transition-all ${
-              activeTab === "crypto"
-                ? "border-orange-500 ring-2 ring-orange-500/20 bg-orange-50"
-                : "border-gray-200 hover:border-gray-300 bg-white"
-            }`}
-          >
-            <div className="mb-3 flex items-center justify-between">
-              <Bitcoin size={32} className={activeTab === "crypto" ? "text-orange-500" : "text-gray-400"} />
-              <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[9px] font-bold uppercase text-orange-600">
-                Fast
-              </span>
-            </div>
-            <div className="text-sm font-bold" style={{ color: "var(--text)" }}>Crypto</div>
-            <div className="text-[10px]" style={{ color: "#999" }}>Bitcoin &amp; major cryptocurrencies</div>
-          </button>
-
-          <button
             onClick={() => setActiveTab("card")}
             className={`relative overflow-hidden rounded-xl border p-4 text-left transition-all ${
               activeTab === "card"
@@ -218,6 +203,24 @@ export default function PaymentOptions({ amount, productName, bookingId }: Payme
             </div>
             <div className="text-sm font-bold" style={{ color: "var(--text)" }}>Card / Wallet</div>
             <div className="text-[10px]" style={{ color: "#999" }}>Credit/Debit &middot; Apple Pay &middot; Google Pay</div>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("crypto")}
+            className={`relative overflow-hidden rounded-xl border p-4 text-left transition-all ${
+              activeTab === "crypto"
+                ? "border-orange-500 ring-2 ring-orange-500/20 bg-orange-50"
+                : "border-gray-200 hover:border-gray-300 bg-white"
+            }`}
+          >
+            <div className="mb-3 flex items-center justify-between">
+              <Bitcoin size={32} className={activeTab === "crypto" ? "text-orange-500" : "text-gray-400"} />
+              <span className="rounded-full bg-orange-100 px-2 py-0.5 text-[9px] font-bold uppercase text-orange-600">
+                Fast
+              </span>
+            </div>
+            <div className="text-sm font-bold" style={{ color: "var(--text)" }}>Crypto</div>
+            <div className="text-[10px]" style={{ color: "#999" }}>Bitcoin &amp; major cryptocurrencies</div>
           </button>
         </div>
 
@@ -322,8 +325,8 @@ export default function PaymentOptions({ amount, productName, bookingId }: Payme
                 <strong style={{ color: "var(--text)" }}>Copy it now before you continue.</strong>
               </p>
               <div className="flex items-center gap-2">
-                <code className="flex-1 overflow-hidden text-ellipsis rounded-md border border-gray-200 bg-white px-3 py-2.5 font-mono text-xs" style={{ color: "var(--text)" }}>
-                  {walletAddress || "Loading..."}
+                <code className="flex-1 overflow-hidden text-ellipsis rounded-md border border-gray-200 bg-white px-3 py-2.5 font-mono text-xs" style={{ color: walletAddress ? "var(--text)" : "#999" }}>
+                  {walletAddress || (walletLoaded ? "Wallet not configured — contact support" : "Loading...")}
                 </code>
                 <button
                   onClick={copyWallet}

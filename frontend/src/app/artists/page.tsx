@@ -15,8 +15,10 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useTranslation } from "@/i18n/context";
 import Footer from "@/components/layouts/Footer";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useHydrated } from "@/store/Provider";
 import { fetchLandingData } from "@/store/slices/landingSlice";
 import { fetchArtists } from "@/store/slices/artistSlice";
+import { imgSrc } from "@/utils/urlHelper";
 
 const NAV_ITEMS = [
   {
@@ -30,8 +32,8 @@ const NAV_ITEMS = [
   {
     label: "Design Tools",
     children: [
-      { label: "AI Tattoo Generator", href: "/artists" },
-      { label: "Custom Design", href: "/artists" },
+      { label: "AI Tattoo Generator", href: "/design-tools" },
+      { label: "Custom Design", href: "/design-tools#custom" },
     ],
   },
   {
@@ -53,9 +55,9 @@ const STYLE_SLUG_MAP: Record<string, string> = {
 
 function getArtistImages(artist: { images?: { imageUrl: string }[]; styles: string[] }, artistIndex: number): string[] {
   if (artist.images && artist.images.length >= 4) {
-    return artist.images.slice(0, 4).map(i => i.imageUrl);
+    return artist.images.slice(0, 4).map(i => imgSrc(i.imageUrl));
   }
-  const imgs = artist.images?.map(i => i.imageUrl) || [];
+  const imgs = artist.images?.map(i => imgSrc(i.imageUrl)) || [];
   const slug = STYLE_SLUG_MAP[artist.styles[0]] || "illustrative";
   while (imgs.length < 4) {
     const v = ((artistIndex * 7 + imgs.length) % 50) + 1;
@@ -91,6 +93,9 @@ function ArtistsPage() {
   const activeTag = searchParams.get("tags") || "";
   const initialSearch = searchParams.get("search") || "";
   const { t } = useTranslation();
+  const hydrated = useHydrated();
+  const { user } = useAppSelector((s) => s.auth);
+  const isLoggedIn = hydrated && !!user;
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [authModal, setAuthModal] = useState<"login" | "register" | null>(null);
   const [selectedStyle, setSelectedStyle] = useState("");
@@ -202,17 +207,27 @@ function ArtistsPage() {
             <div className="hidden md:block">
               <LanguageSwitcher />
             </div>
-            <Link href="/join">
-              <button className="rounded-full border border-[#e8453c] px-5 py-2 text-sm font-medium text-[#e8453c] transition-colors hover:bg-[#e8453c] hover:text-white">
-                {t("nav.joinAsArtist")}
-              </button>
-            </Link>
-            <button
-              onClick={() => setAuthModal("login")}
-              className="text-sm font-medium text-[#e8453c] transition-colors hover:text-[#c5372f]"
-            >
-              {t("nav.signIn")}
-            </button>
+            {isLoggedIn ? (
+              <Link href="/dashboard">
+                <button className="rounded-full bg-[var(--accent)] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-[var(--accent-hover)]">
+                  Dashboard
+                </button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/join">
+                  <button className="rounded-full border border-[#e8453c] px-5 py-2 text-sm font-medium text-[#e8453c] transition-colors hover:bg-[#e8453c] hover:text-white">
+                    {t("nav.joinAsArtist")}
+                  </button>
+                </Link>
+                <button
+                  onClick={() => setAuthModal("login")}
+                  className="text-sm font-medium text-[#e8453c] transition-colors hover:text-[#c5372f]"
+                >
+                  {t("nav.signIn")}
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -347,7 +362,7 @@ function ArtistsPage() {
                   <div className="flex items-center gap-3">
                     {artist.profileImageUrl ? (
                       <img
-                        src={artist.profileImageUrl}
+                        src={imgSrc(artist.profileImageUrl)}
                         alt={artist.name}
                         className="h-10 w-10 shrink-0 rounded-full object-cover"
                       />

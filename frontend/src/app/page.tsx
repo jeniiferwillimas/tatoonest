@@ -19,6 +19,8 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useTranslation } from "@/i18n/context";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchLandingData } from "@/store/slices/landingSlice";
+import { useHydrated } from "@/store/Provider";
+import { imgSrc } from "@/utils/urlHelper";
 
 /* ─── Nav ─── */
 
@@ -143,7 +145,9 @@ export default function Home() {
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const hydrated = useHydrated();
   const { stats, testimonials, popularCities, styles: allStyles, loading } = useAppSelector((s) => s.landing);
+  const { user } = useAppSelector((s) => s.auth);
 
   useEffect(() => {
     dispatch(fetchLandingData());
@@ -207,14 +211,24 @@ export default function Home() {
             <div className="hidden md:block">
               <LanguageSwitcher />
             </div>
-            <Link href="/join">
-              <button className="rounded-full border border-[#e8453c] px-5 py-2 text-sm font-medium text-[#e8453c] transition-colors hover:bg-[#e8453c] hover:text-white">
-                {t("nav.joinAsArtist")}
-              </button>
-            </Link>
-            <button onClick={() => setAuthModal("login")} className="text-sm font-medium text-[#e8453c] transition-colors hover:text-[#c5372f]">
-              {t("nav.signIn")}
-            </button>
+            {hydrated && user ? (
+              <Link href="/dashboard">
+                <button className="rounded-full bg-[#e8453c] px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#c5372f]">
+                  {t("nav.dashboard") || "Dashboard"}
+                </button>
+              </Link>
+            ) : (
+              <>
+                <Link href="/join">
+                  <button className="rounded-full border border-[#e8453c] px-5 py-2 text-sm font-medium text-[#e8453c] transition-colors hover:bg-[#e8453c] hover:text-white">
+                    {t("nav.joinAsArtist")}
+                  </button>
+                </Link>
+                <button onClick={() => setAuthModal("login")} className="text-sm font-medium text-[#e8453c] transition-colors hover:text-[#c5372f]">
+                  {t("nav.signIn")}
+                </button>
+              </>
+            )}
           </div>
         </div>
       </header>
@@ -583,7 +597,7 @@ export default function Home() {
                   style={{ minHeight: "160px" }}
                 >
                   <Image
-                    src={style.imageUrl}
+                    src={imgSrc(style.imageUrl)}
                     alt={style.name}
                     fill
                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"

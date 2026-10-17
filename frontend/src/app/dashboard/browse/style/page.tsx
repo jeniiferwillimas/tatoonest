@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchLandingData } from "@/store/slices/landingSlice";
+import { imgSrc } from "@/utils/urlHelper";
 
 export default function ByStylePage() {
   const dispatch = useAppDispatch();
@@ -38,7 +39,7 @@ export default function ByStylePage() {
           >
             <div className="relative aspect-[16/9]">
               <Image
-                src={style.imageUrl}
+                src={imgSrc(style.imageUrl)}
                 alt={style.name}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"

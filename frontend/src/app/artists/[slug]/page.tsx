@@ -19,6 +19,7 @@ import { Button } from "@/components/ui";
 import BookingModal from "@/components/BookingModal";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchArtistBySlug } from "@/store/slices/artistSlice";
+import { imgSrc } from "@/utils/urlHelper";
 
 function getInitials(name: string) {
   return name.split(" ").map((w) => w[0]).join("").toUpperCase().slice(0, 2);
@@ -143,7 +144,7 @@ function ArtistDetailPage() {
 
           <div className="flex flex-col items-center gap-4" onClick={(e) => e.stopPropagation()}>
             <img
-              src={lightboxImage.imageUrl}
+              src={imgSrc(lightboxImage.imageUrl)}
               alt={`${artist.name} tattoo`}
               className="max-h-[80vh] max-w-[90vw] rounded-lg object-contain"
             />
@@ -194,7 +195,7 @@ function ArtistDetailPage() {
         <div className="flex items-center gap-5">
           {artist.profileImageUrl ? (
             <img
-              src={artist.profileImageUrl}
+              src={imgSrc(artist.profileImageUrl)}
               alt={artist.name}
               className="h-20 w-20 rounded-full object-cover"
             />
@@ -265,7 +266,7 @@ function ArtistDetailPage() {
                     onClick={() => setLightboxIndex(i)}
                   >
                     <img
-                      src={img.imageUrl}
+                      src={imgSrc(img.imageUrl)}
                       alt={`${artist.name} tattoo ${i + 1}`}
                       className="w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       style={{ aspectRatio: i % 3 === 0 ? "3/4" : i % 3 === 1 ? "1/1" : "4/5" }}

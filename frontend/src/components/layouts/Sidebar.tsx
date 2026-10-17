@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { getUserAuthorizedModules, Module } from "@/store/slices/moduleSlice";
+import { useHydrated } from "@/store/Provider";
 import {
   LayoutDashboard,
   Users,
@@ -58,9 +59,10 @@ export default function Sidebar() {
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const [search, setSearch] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+  const hydrated = useHydrated();
   const { user } = useAppSelector((state) => state.auth);
   const { modules } = useAppSelector((state) => state.modules);
-  const userRole = user?.role || "NormalUser";
+  const userRole = hydrated ? (user?.role || "NormalUser") : "NormalUser";
 
   useEffect(() => {
     if (user) {

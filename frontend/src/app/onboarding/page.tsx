@@ -28,6 +28,7 @@ import {
   submitArtistProfile,
 } from "@/store/slices/artistProfileSlice";
 import { fetchLandingData } from "@/store/slices/landingSlice";
+import { imgSrc } from "@/utils/urlHelper";
 
 const STEPS = [
   { icon: User, title: "Start your profile", desc: "Your name and studio info" },
@@ -266,7 +267,7 @@ export default function OnboardingPage() {
                     <div key={img.id} className="flex flex-col gap-1.5">
                       <div className="group relative aspect-square overflow-hidden rounded-lg border border-[var(--border)]">
                         <img
-                          src={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5050"}${img.imageUrl}`}
+                          src={imgSrc(img.imageUrl)}
                           alt={img.fileName}
                           className="h-full w-full object-cover"
                         />

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useAppSelector, useAppDispatch } from "@/store/hooks";
 import { logout } from "@/store/slices/authSlice";
+import { useHydrated } from "@/store/Provider";
 import {
   Bell,
   User,
@@ -18,7 +19,9 @@ interface HeaderProps {
 }
 
 export default function Header({ onMobileMenuToggle }: HeaderProps) {
-  const { user } = useAppSelector((state) => state.auth);
+  const hydrated = useHydrated();
+  const rawUser = useAppSelector((state) => state.auth.user);
+  const user = hydrated ? rawUser : null;
   const dispatch = useAppDispatch();
   const [profileOpen, setProfileOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);

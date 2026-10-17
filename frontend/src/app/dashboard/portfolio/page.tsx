@@ -6,7 +6,7 @@ import { Plus, Trash2, Image as ImageIcon, DollarSign } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchArtistProfile } from "@/store/slices/artistProfileSlice";
 import api from "@/utils/axiosInstance";
-import urlHelper from "@/utils/urlHelper";
+import urlHelper, { imgSrc } from "@/utils/urlHelper";
 import { Button } from "@/components/ui";
 
 export default function PortfolioPage() {
@@ -94,7 +94,7 @@ export default function PortfolioPage() {
             <div key={img.id} className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white">
               <div className="relative aspect-square">
                 <Image
-                  src={img.imageUrl}
+                  src={imgSrc(img.imageUrl)}
                   alt="Portfolio"
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

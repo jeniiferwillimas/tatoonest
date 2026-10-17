@@ -63,6 +63,21 @@ export const urlHelper = {
     save: `${BASE_URL}/api/saved`,
     remove: (id: number) => `${BASE_URL}/api/saved/${id}`,
   },
+  adminArtists: {
+    list: `${BASE_URL}/api/admin/artists`,
+    get: (id: number) => `${BASE_URL}/api/admin/artists/${id}`,
+    create: `${BASE_URL}/api/admin/artists`,
+    update: (id: number) => `${BASE_URL}/api/admin/artists/${id}`,
+    delete: (id: number) => `${BASE_URL}/api/admin/artists/${id}`,
+    uploadImage: (id: number) => `${BASE_URL}/api/admin/artists/${id}/images`,
+    uploadProfileImage: (id: number) => `${BASE_URL}/api/admin/artists/${id}/profile-image`,
+    deleteImage: (id: number, imageId: number) => `${BASE_URL}/api/admin/artists/${id}/images/${imageId}`,
+  },
+  adminMessages: {
+    conversations: `${BASE_URL}/api/admin/messages/conversations`,
+    conversation: (id: number) => `${BASE_URL}/api/admin/messages/conversations/${id}`,
+    deleteConversation: (id: number) => `${BASE_URL}/api/admin/messages/conversations/${id}`,
+  },
   payments: {
     walletConfig: `${BASE_URL}/api/payments/wallet-config`,
     cryptoCheckout: `${BASE_URL}/api/payments/crypto/checkout`,
@@ -74,5 +89,11 @@ export const urlHelper = {
     plans: `${BASE_URL}/api/payments/plans`,
   },
 };
+
+export function imgSrc(url: string) {
+  if (!url) return "";
+  if (url.startsWith("/uploads/")) return `${BASE_URL}${url}`;
+  return url;
+}
 
 export default urlHelper;

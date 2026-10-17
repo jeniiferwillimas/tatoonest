@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAppSelector } from "@/store/hooks";
 import Sidebar from "@/components/layouts/Sidebar";
 import Header from "@/components/layouts/Header";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+function DashboardContent({ children }: { children: React.ReactNode }) {
   const { user } = useAppSelector((state) => state.auth);
   const router = useRouter();
 
@@ -25,5 +25,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <main className="p-4 md:p-6">{children}</main>
       </div>
     </div>
+  );
+}
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-4 border-[var(--accent)] border-t-transparent" /></div>}>
+      <DashboardContent>{children}</DashboardContent>
+    </Suspense>
   );
 }

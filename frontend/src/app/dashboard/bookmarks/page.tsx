@@ -7,7 +7,7 @@ import { Bookmark, Trash2, ExternalLink } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchSavedItems, fetchBoards } from "@/store/slices/savedSlice";
 import api from "@/utils/axiosInstance";
-import urlHelper from "@/utils/urlHelper";
+import urlHelper, { imgSrc } from "@/utils/urlHelper";
 
 export default function BookmarksPage() {
   const dispatch = useAppDispatch();
@@ -65,7 +65,7 @@ export default function BookmarksPage() {
             <div key={item.id} className="group relative overflow-hidden rounded-xl border border-gray-200 bg-white">
               {item.imageUrl ? (
                 <div className="relative aspect-square">
-                  <Image src={item.imageUrl} alt="" fill sizes="25vw" className="object-cover" />
+                  <Image src={imgSrc(item.imageUrl)} alt="" fill sizes="25vw" className="object-cover" />
                 </div>
               ) : (
                 <div className="flex aspect-square items-center justify-center bg-gray-50">
