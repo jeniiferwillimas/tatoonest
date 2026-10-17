@@ -17,7 +17,7 @@ import Footer from "@/components/layouts/Footer";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useHydrated } from "@/store/Provider";
 import { fetchLandingData } from "@/store/slices/landingSlice";
-import { fetchArtists } from "@/store/slices/artistSlice";
+import { fetchArtists, fetchMoreArtists } from "@/store/slices/artistSlice";
 import { imgSrc } from "@/utils/urlHelper";
 
 const NAV_ITEMS = [
@@ -103,7 +103,7 @@ function ArtistsPage() {
 
   const dispatch = useAppDispatch();
   const { styles, loading: landingLoading } = useAppSelector((s) => s.landing);
-  const { list: artists, loading: artistsLoading } = useAppSelector((s) => s.artists);
+  const { list: artists, loading: artistsLoading, loadingMore, hasMore, page, totalCount } = useAppSelector((s) => s.artists);
 
   useEffect(() => {
     dispatch(fetchLandingData());
@@ -326,7 +326,7 @@ function ArtistsPage() {
       {/* ─── Results Count ─── */}
       <div className="mx-auto max-w-7xl px-6 py-4">
         <p className="text-sm" style={{ color: "#666" }}>
-          Showing 1&ndash;{Math.min(24, filteredArtists.length)} of {totalArtists.toLocaleString()}
+          Showing {filteredArtists.length} of {totalCount > 0 ? totalCount.toLocaleString() : totalArtists.toLocaleString()}
         </p>
       </div>
 
@@ -342,6 +342,7 @@ function ArtistsPage() {
             <p className="mt-2 text-sm" style={{ color: "#666" }}>Try a different style or search term.</p>
           </div>
         ) : (
+          <div>
           <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
             {filteredArtists.map((artist, idx) => {
               const imgs = getArtistImages(artist, idx);
@@ -464,6 +465,25 @@ function ArtistsPage() {
                 </Link>
               );
             })}
+          </div>
+
+          {hasMore && (
+            <div className="mt-10 flex justify-center">
+              <button
+                onClick={() => {
+                  dispatch(fetchMoreArtists({
+                    style: selectedStyle || undefined,
+                    search: searchQuery || undefined,
+                    page: page + 1,
+                  }));
+                }}
+                disabled={loadingMore}
+                className="rounded-full border border-[var(--accent)] px-8 py-3 text-sm font-medium text-[var(--accent)] transition-colors hover:bg-[var(--accent)] hover:text-white disabled:opacity-50"
+              >
+                {loadingMore ? "Loading..." : "Load More Artists"}
+              </button>
+            </div>
+          )}
           </div>
         )}
       </div>

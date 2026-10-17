@@ -11,7 +11,7 @@ export default function BrowseStudiosPage() {
   const { list: artists, loading } = useAppSelector((s) => s.artists);
 
   useEffect(() => {
-    dispatch(fetchArtists({}));
+    dispatch(fetchArtists({ pageSize: 100 }));
   }, [dispatch]);
 
   const studios = artists.filter((a) => a.isStudio);
